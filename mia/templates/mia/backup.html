@@ -1,0 +1,27 @@
+{% extends 'mia/base.html' %}
+
+
+{% block container %}
+    <form action="{% url 'backup_db' %}" method="post" id="backup-db-form">
+        {% csrf_token %}
+        <div>
+            <label for="db-host">Host:</label>
+            <input type="text" name="db_host" id="db-host" value="localhost">
+        </div>
+        <div>
+            <label for="db-name">Database:</label>
+            <input type="text" name="db_name" id="db-name" value="hrms">
+        </div>
+
+        <div>
+            <label for="db-user">Username:</label>
+            <input type="text" name="db_user" id="db-user" value="root">
+        </div>
+
+        <div>
+            <label for="db-password">Password:</label>
+            <input type="password" name="db_pass" id="db-password" value="p@55w0rd">
+        </div>
+        <button type="submit">Backup</button>
+    </form>
+{% endblock %}
