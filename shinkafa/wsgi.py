@@ -11,6 +11,13 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
+from core.config import ENV_MODE
+from django.core.wsgi import get_wsgi_application
+from whitenoise.django import DjangoWhiteNoise
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "shinkafa.settings")
 
 application = get_wsgi_application()
+
+if ENV_MODE == 'prod' or ENV_MODE is None:
+    application = DjangoWhiteNoise(application)
