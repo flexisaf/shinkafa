@@ -138,7 +138,7 @@ if ENV_MODE == "prod":
     ]
 
     PRODUCTION_MIDDLEWARE = [
-            'whitenoise.middleware.WhiteNoiseMiddleware'
+        'whitenoise.middleware.WhiteNoiseMiddleware'
     ]
 
     DEBUG = False
@@ -146,8 +146,16 @@ if ENV_MODE == "prod":
     INSTALLED_APPS += PRODUCTION_APP
 
     # use the heroku postgres database
-    django_database_config = dj_database_url.config(conn_max_age=500)
-    DATABASES['default'].update(django_database_config)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'flexisaf',
+            'USER': 'root',
+            'PASSWORD': get_environment_var('DB_PASS'),  # get the database password from the environment var
+            'HOST': get_environment_var('DB_HOST'),
+            'ATOMIC_REQUESTS': True  # make the database transactional
+        }
+    }
 
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
@@ -164,6 +172,3 @@ if ENV_MODE == "prod":
     ]
 else:
     INSTALLED_APPS += PROJECT_APPS
-
-
-
