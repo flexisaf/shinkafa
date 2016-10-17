@@ -1,0 +1,1 @@
+web: gunicorn shinkafa.wsgi --log-file -

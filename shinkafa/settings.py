@@ -9,18 +9,19 @@ https://docs.djangoproject.com/en/1.10/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.10/ref/settings/
 """
-
+from core.config import get_environment_var, ENV_MODE
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'dvlpk$x67ta#4#hjp@v!of&n=+sp(bdt&wt7#@frlv&@*wa!2#'
+SECRET_KEY = get_environment_var('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -38,11 +39,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'mia'
+]
+
+PROJECT_APPS = [
+    'mia',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -122,3 +127,41 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'assets')]
+
+if ENV_MODE == "prod":
+    PRODUCTION_APP = [
+        'whitenoise.runserver_nostatic',
+        'django.contrib.staticfiles',
+
+    ]
+
+    PRODUCTION_MIDDLEWARE = [
+            'whitenoise.middleware.WhiteNoiseMiddleware'
+    ]
+
+    DEBUG = False
+
+    INSTALLED_APPS += PRODUCTION_APP + PROJECT_APPS
+
+    # use the heroku postgres database
+    django_database_config = dj_database_url.config(conn_max_age=500)
+    DATABASES['default'].update(django_database_config)
+
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+    ALLOWED_HOSTS = ['*']
+
+    STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+    STATICFILES_DIRS = [
+        os.path.join(
+            BASE_DIR, 'static'
+        )
+    ]
+else:
+    INSTALLED_APPS += PROJECT_APPS
+
+
+
