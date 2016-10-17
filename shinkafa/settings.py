@@ -133,6 +133,7 @@ if ENV_MODE == "prod":
     PRODUCTION_APP = [
         'whitenoise.runserver_nostatic',
         'django.contrib.staticfiles',
+        'mia',
 
     ]
 
@@ -142,7 +143,7 @@ if ENV_MODE == "prod":
 
     DEBUG = False
 
-    INSTALLED_APPS += PRODUCTION_APP + PROJECT_APPS
+    INSTALLED_APPS += PRODUCTION_APP
 
     # use the heroku postgres database
     django_database_config = dj_database_url.config(conn_max_age=500)
