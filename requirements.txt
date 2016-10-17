@@ -5,7 +5,6 @@ Django==1.9.2
 django-debug-toolbar==1.4
 django-embed-video==1.1.0
 django-storages==1.4
-django-toolbelt==0.0.1
 djangorestframework==3.4.7
 gunicorn==19.4.5
 requests==2.9.1
