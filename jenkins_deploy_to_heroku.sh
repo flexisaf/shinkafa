@@ -13,7 +13,9 @@ ENV_MODE='prod'
 function set_heroku_environment_to_prod() {
     echo "Setting configuration"
     heroku config:set ENV=prod --app ${HEROKU_APP}
-    heroku config:set DEBUG_COLLECTSTATIC=1 --app ${HEROKU_APP}
+#    heroku config:set DEBUG_COLLECTSTATIC=1 --app ${HEROKU_APP}
+    heroku config:set DISABLE_COLLECTSTATIC=1 --app ${HEROKU_APP}
+
 
 }
 
@@ -39,6 +41,7 @@ function run_database_migration() {
 }
 
 
+set_heroku_environment_to_prod
 enable_shell_echo
 deploy_code_to_heroku
 run_database_migration
