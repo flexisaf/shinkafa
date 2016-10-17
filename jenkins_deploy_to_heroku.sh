@@ -30,7 +30,7 @@ function deploy_code_to_heroku(){
     fi
     heroku git:remote -a ${HEROKU_APP}
     #git -c core.askpass=true push https://git.heroku.com/${HEROKU_APP}.git HEAD:master -f
-    git push -u heroku develop:master
+    git push -u heroku master
 }
 
 function run_database_migration() {
