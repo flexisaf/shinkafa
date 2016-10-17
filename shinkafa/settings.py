@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 from core.config import get_environment_var, ENV_MODE
 import os
-# import dj_database_url
+import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -138,7 +138,7 @@ if ENV_MODE == "prod":
     ]
 
     PRODUCTION_MIDDLEWARE = [
-        'whitenoise.middleware.WhiteNoiseMiddleware'
+            'whitenoise.middleware.WhiteNoiseMiddleware'
     ]
 
     DEBUG = False
@@ -146,16 +146,8 @@ if ENV_MODE == "prod":
     INSTALLED_APPS += PRODUCTION_APP
 
     # use the heroku postgres database
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'flexisaf',
-            'USER': 'root',
-            'PASSWORD': get_environment_var('DB_PASS'),  # get the database password from the environment var
-            'HOST': get_environment_var('DB_HOST'),
-            'ATOMIC_REQUESTS': True  # make the database transactional
-        }
-    }
+    django_database_config = dj_database_url.config(conn_max_age=500)
+    DATABASES['default'].update(django_database_config)
 
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
@@ -172,3 +164,6 @@ if ENV_MODE == "prod":
     ]
 else:
     INSTALLED_APPS += PROJECT_APPS
+
+
+

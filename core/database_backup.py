@@ -24,6 +24,8 @@ def backup_database_server(db_user='root', db_password=None, db_name=None, db_ho
 
 
 def get_tem_file(db_name=None):
+    if not os.path.exists('/tmp'):
+        os.mkdir("/tmp")
     with tempfile.NamedTemporaryFile(suffix=".sql", prefix=db_name, delete=False) as tp:
         tmp_file_location = tp.name
     return tmp_file_location
