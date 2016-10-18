@@ -153,7 +153,8 @@ def start_docker_process(docker_host="staging"):
         local("mkdir -p %s" % host_log_directory)
     docker_tag = "flexisaf/shinkafa:latest"
     client_db_name = "shinkafa_" + docker_host
-    docker_env = "-e DB_NAME='%s' -e CLIENT_S3_FOLDER='%s'" % (client_db_name, docker_host)
+    secret_key = "your_secrete393939_key_here_please"
+    docker_env = "-e DB_NAME='%s' -e CLIENT_S3_FOLDER='%s' -e SECRET_KEY='%s'" % (client_db_name, docker_host,secret_key)
     local("docker run %s --name=shinkafa --detach=true --restart=always --publish=80:80 --volume=%s:%s %s"
         % (docker_env, host_log_directory, DOCKER_LOG_DIR, docker_tag))
 
@@ -195,11 +196,11 @@ def ship_docker():
     """
     with settings(warn_only=True, colorize_error=True):
         # check if this is the first time we are loading this docker on the machine
-        docker_restart = run("docker restart shinkafa")
+        docker_restart = local("docker restart shinkafa")
     if docker_restart.failed:
         print(red("Docker process restarted, Starting a new process"))
         # only start a new docker process if there is no current process running
-        start_docker_process(docker_host=get_client_name_from_host(env.host))  # start a new docker process
+        start_docker_process(docker_host=get_client_name_from_host("shinkafa"))  # start a new docker process
 
 
 

@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 from core.config import get_environment_var, ENV_MODE
 import os
-import dj_database_url
+# import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -144,17 +144,17 @@ if ENV_MODE == "prod":
 
     INSTALLED_APPS += PRODUCTION_APP
 
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': get_environment_var('DB_NAME'),
-            'USER': get_environment_var('DB_USER'),
-            'PASSWORD': get_environment_var('DB_PASS'),
-            'HOST': get_environment_var('DB_HOST'),
-            'PORT': '3306',
-            'ATOMIC_REQUESTS': True  # make the database transactional
-        }
-    }
+    # DATABASES = {
+    #     'default': {
+    #         'ENGINE': 'django.db.backends.mysql',
+    #         'NAME': get_environment_var('DB_NAME'),
+    #         'USER': "root",
+    #         'PASSWORD': get_environment_var('DB_PASS'),
+    #         'HOST': get_environment_var('DB_HOST'),
+    #         'PORT': '3306',
+    #         'ATOMIC_REQUESTS': True  # make the database transactional
+    #     }
+    # }
 
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
