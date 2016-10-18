@@ -8,6 +8,11 @@ from core import database_backup
 # Create your views here.
 
 
+class HomePage(TemplateView):
+    template_name = 'mia/index.html'
+
+
+
 class DBBackupView(TemplateView):
     template_name = 'mia/backup.html'
 
@@ -30,3 +35,5 @@ class DBBackupView(TemplateView):
                 return response
         else:
             return render(request, template_name=self.template_name, context={})
+
+

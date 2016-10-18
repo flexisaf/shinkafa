@@ -15,8 +15,10 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from mia.views import HomePage
 
 urlpatterns = [
-    url(r'^chuahaha/', admin.site.urls),
-    url(r'^mia/', include('mia.urls'))
+    # url(r'^chuahaha/', admin.site.urls),
+    url(r'^internal/', include('mia.urls')),
+    url(r'^$', view=HomePage.as_view(), name="home_page")
 ]

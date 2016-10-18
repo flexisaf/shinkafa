@@ -4,4 +4,4 @@
 
 echo Build pipeline started....
 
-fab start_build_pipeline ship_docker
+fab start_build_pipeline ship_docker --fabfile=fabfile_jenkins

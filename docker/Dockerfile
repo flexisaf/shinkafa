@@ -25,7 +25,7 @@ RUN apt-get install python-setuptools --force-yes -y 	## for python2.7 or above
 RUN apt-get install build-essential --force-yes -y 		##
 RUN apt-get install python-virtualenv --force-yes -y 	## virtual env
 RUN apt-get install python-dev --force-yes -y 		## because ubuntu 14.04 does not have dev version of python 2
-RUN apt-get install mysql-client-core-5.6 --force-yes -y
+RUN apt-get install mysql-client-5.6 --force-yes -y
 RUN apt-get install  build-essential \
                          libmysqlclient-dev \
                          libpq-dev \
