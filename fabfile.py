@@ -23,9 +23,7 @@ except KeyError:
     abort('Add SAFSME_PEM_FILE location var to system path. Aborting operation ...')
 
 env.roledefs = {
-    "ci": ["jenkins"],
-    "dev": ["localhost"],
-    "flexisaf": ["ec2-user"]
+    "flexisaf": ["ec2-user@54.213.134.173"],
 }
 
 env.key_filename = SSH_PEM_FILE
@@ -59,9 +57,22 @@ def remove_old_build():
         local("rm -r build")
         local("rm -r dist")
         local("rm *.deb")
-        local("rm -r SHINKAFA.egg-info")
+        local("rm -r SAFTIMS_HR.egg-info")
 
 
+def run_create_js_dist():
+    """
+        Use Node and Npm to bundle all our js and saas
+        file and put then inside our static folder, which
+        will be collected when django run it own
+        collect static command, and serve by Nginx
+    """
+    with settings(warn_only=True):
+        install_js_dep = local("npm install")
+        dist_cmd = local("npm run dist")
+    if install_js_dep.failed or dist_cmd.failed:
+        abort("Fail create js bundle")
+    print("Bundling and minifying of JS  completed")
 
 
 
@@ -145,45 +156,56 @@ def start_docker_process(docker_host="staging"):
         mode and always restart the docker container if for
         any reason the process inside crashes
     """
-    host_machine_pwd = local('echo $HOME')
-    host_log_directory = '/home/ubuntu/webapp/log/shinkafa'
+    host_machine_pwd = run('pwd')
+    host_log_directory = os.path.join(host_machine_pwd, 'webapp/log/shinkafa')
     # check if there is a log directory on the host machine
-    if not os.path.exists(host_log_directory):
+    if not exists(host_log_directory):
         # then create the log directory
-        local("mkdir -p %s" % host_log_directory)
+        run("mkdir -p %s" % host_log_directory)
     docker_tag = "flexisaf/shinkafa:latest"
     client_db_name = "shinkafa_" + docker_host
-    secret_key = "your_secrete393939_key_here_please_not_so$secret"
-    docker_env = "-e DB_NAME='%s' -e CLIENT_S3_FOLDER='%s' -e SECRET_KEY='%s'" % (client_db_name, docker_host,secret_key)
-    local("docker run %s --name=shinkafa --detach=true --restart=always --publish=8083:80 --volume=%s:%s %s"
+    secret_key = "not-so_secret_right%%%$$$09"
+    docker_env = "-e DB_NAME='%s' -e CLIENT_S3_FOLDER='%s' -e SECRET_KEY='%s'" % (client_db_name, docker_host, secret_key)
+    run("docker run %s --name=shinkafa --detach=true --restart=always --publish=80:80 --volume=%s:%s %s"
         % (docker_env, host_log_directory, DOCKER_LOG_DIR, docker_tag))
 
 
 @task()
 def stop_container():
-    local("docker stop shinkafa")
+    run("docker stop shinkafa")
 
 
 @task()
 def start_container():
-    local("docker start shinkafa")
+    run("docker start shinkafa")
 
 
 @task()
 def restart_container():
-    local("docker restart shinkafa")
+    run("docker restart shinkafa")
 
+
+def send_compress_docker_to_remote():
+    """
+        Send our compressed docker image to the
+        the remote instances that was specified
+    """
+    with settings(colorize_errors=True):
+        put('shinkafa.tgz', '~/')
 
 
 @task()
 def start_build_pipeline():
     remove_old_build()
+    run_create_js_dist()
     package_tar()
     copy_tar_to_docker_folder()
     build_docker_image()
+    zip_docker_image()
 
 
 @task()
+@roles(["flexisaf"])
 def ship_docker():
     """
         Ship the compressed docker image to the host machine
@@ -193,13 +215,19 @@ def ship_docker():
         and offload the tar ball on the production
         machine which then start the docker process
     """
+    send_compress_docker_to_remote()
+    # offload the compressed docker image on the remote and use docker load to add it
+    with settings(warn_only=True):
+        docker_load = run("gunzip -c shinkafa.tgz | docker load")
+    if docker_load.failed:  # during unziping did the process failed on
+        pass                # this machine if so just pass and continue to other machine
+
     with settings(warn_only=True, colorize_error=True):
         # check if this is the first time we are loading this docker on the machine
-        docker_restart = local("docker restart shinkafa")
+        docker_restart = run("docker restart shinkafa")
     if docker_restart.failed:
-        print(red("Docker process restarted, failed Starting a new process"))
+        print(red("Docker process restarted, Starting a new process"))
         # only start a new docker process if there is no current process running
-        start_docker_process(docker_host="shinkafa")  # start a new docker process
-
+        start_docker_process(docker_host=get_client_name_from_host(env.host))  # start a new docker process
 
 

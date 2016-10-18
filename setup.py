@@ -23,11 +23,6 @@ setup(
     url="http://flexisaf.net/saftims-hr-demo.html",
 
     install_requires=install_requires,
-    entry_points={
-        'console_scripts': [
-            'hr_setup = scripts.setuphr:main',
-        ]
-    },
     classifiers=[
         'Private :: Dont upload to any pypi registry'
     ]
