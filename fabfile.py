@@ -25,7 +25,7 @@ except KeyError:
 env.roledefs = {
     "ci": ["jenkins"],
     "dev": ["localhost"],
-    "flexisaf": ["ubuntu@ci.flexisaf.com"]
+    "flexisaf": ["ec2-user"]
 }
 
 env.key_filename = SSH_PEM_FILE
@@ -145,16 +145,16 @@ def start_docker_process(docker_host="staging"):
         mode and always restart the docker container if for
         any reason the process inside crashes
     """
-    host_machine_pwd = run('pwd')
+    host_machine_pwd = local('echo $HOME')
     host_log_directory = os.path.join(host_machine_pwd, 'webapp/log/shinkafa')
     # check if there is a log directory on the host machine
     if not exists(host_log_directory):
         # then create the log directory
-        run("mkdir -p %s" % host_log_directory)
+        local("mkdir -p %s" % host_log_directory)
     docker_tag = "flexisaf/shinkafa:latest"
     client_db_name = "shinkafa_" + docker_host
     docker_env = "-e DB_NAME='%s' -e CLIENT_S3_FOLDER='%s'" % (client_db_name, docker_host)
-    run("docker run %s --name=shinkafa --detach=true --restart=always --publish=80:80 --volume=%s:%s %s"
+    local("docker run %s --name=shinkafa --detach=true --restart=always --publish=80:80 --volume=%s:%s %s"
         % (docker_env, host_log_directory, DOCKER_LOG_DIR, docker_tag))
 
 
@@ -173,13 +173,6 @@ def restart_container():
     run("docker restart shinkafa")
 
 
-def send_compress_docker_to_remote():
-    """
-        Send our compressed docker image to the
-        the remote instances that was specified
-    """
-    with settings(colorize_errors=True):
-        put('shinkafa.tgz', '~/')
 
 
 @task()
@@ -188,11 +181,9 @@ def start_build_pipeline():
     package_tar()
     copy_tar_to_docker_folder()
     build_docker_image()
-    zip_docker_image()
 
 
 @task()
-@roles(["flexisaf"])
 def ship_docker():
     """
         Ship the compressed docker image to the host machine
@@ -202,13 +193,6 @@ def ship_docker():
         and offload the tar ball on the production
         machine which then start the docker process
     """
-    send_compress_docker_to_remote()
-    # offload the compressed docker image on the remote and use docker load to add it
-    with settings(warn_only=True):
-        docker_load = run("gunzip -c shinkafa.tgz | docker load")
-    if docker_load.failed:  # during unziping did the process failed on
-        pass                # this machine if so just pass and continue to other machine
-
     with settings(warn_only=True, colorize_error=True):
         # check if this is the first time we are loading this docker on the machine
         docker_restart = run("docker restart shinkafa")
@@ -216,5 +200,6 @@ def ship_docker():
         print(red("Docker process restarted, Starting a new process"))
         # only start a new docker process if there is no current process running
         start_docker_process(docker_host=get_client_name_from_host(env.host))  # start a new docker process
+
 
 
