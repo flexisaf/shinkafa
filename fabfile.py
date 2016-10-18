@@ -153,9 +153,9 @@ def start_docker_process(docker_host="staging"):
         local("mkdir -p %s" % host_log_directory)
     docker_tag = "flexisaf/shinkafa:latest"
     client_db_name = "shinkafa_" + docker_host
-    secret_key = "your_secrete393939_key_here_please"
+    secret_key = "your_secrete393939_key_here_please_not_so$secret"
     docker_env = "-e DB_NAME='%s' -e CLIENT_S3_FOLDER='%s' -e SECRET_KEY='%s'" % (client_db_name, docker_host,secret_key)
-    local("docker run %s --name=shinkafa --detach=true --restart=always --publish=80:80 --volume=%s:%s %s"
+    local("docker run %s --name=shinkafa --detach=true --restart=always --publish=8083:80 --volume=%s:%s %s"
         % (docker_env, host_log_directory, DOCKER_LOG_DIR, docker_tag))
 
 

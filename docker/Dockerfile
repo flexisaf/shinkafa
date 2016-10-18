@@ -55,7 +55,7 @@ VOLUME ["$DOCKYARD_SRC/media/", "$DOCKYARD_SRC/logs/"]
 
 RUN pip install  $DOCKYARD_SRC/SHINKAFA-0.0.1.tar.gz
 
-EXPOSE 80
+EXPOSE 8083
 
 WORKDIR $DOCKYARD_SRC
 COPY ./entry-point.sh /
