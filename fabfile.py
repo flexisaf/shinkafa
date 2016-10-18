@@ -5,25 +5,16 @@ from fabric.colors import *
 from fabric.contrib.files import exists
 import os
 __author__ = 'peter'
-
-PROJECT_NAME = 'saftims-hr'
-VERSION = '0.1'
-VIRT_DIR = "deb-build"
-DEBIAN_PROJECT_DEP = "python,build-essential,python-dev,libmysqlclient-dev," \
-                     "libpq-dev,nginx,libxml2-dev,libxslt1-dev,libffi-dev,libjpeg-dev"
-INSTALLATION_DIR = "/var/www"
 DOCKER_LOG_DIR = "/src/webapp/shinkafa/logs"
-SRC_DIR = os.path.dirname(os.path.abspath(__file__))
-BUILD_DIR = os.path.join(SRC_DIR, VIRT_DIR)
 
 try:
-    SSH_PEM_FILE = os.getenv('SAFSMS_PEM_FILE')
+    SSH_PEM_FILE = os.getenv('REMOTE_PEM')
 except KeyError:
     local('echo could not get path variable for pem file')
-    abort('Add SAFSME_PEM_FILE location var to system path. Aborting operation ...')
+    abort('Can find remot pem file')
 
 env.roledefs = {
-    "flexisaf": ["ec2-user@54.213.134.173"],
+    "flexisaf": ["user@remote-domain.com"],
 }
 
 env.key_filename = SSH_PEM_FILE
@@ -204,7 +195,7 @@ def start_build_pipeline():
 
 
 @task()
-@roles(["flexisaf"])
+@roles(["remote"])
 def ship_docker():
     """
         Ship the compressed docker image to the host machine

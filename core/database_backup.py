@@ -1,4 +1,5 @@
 from django.http.response import HttpResponseBadRequest
+from django.utils.timezone import now
 import subprocess
 import tempfile
 import os
@@ -11,6 +12,7 @@ __author__ = 'peter'
 def backup_database_server(db_user='root', db_password=None, db_name=None, db_host="localhost"):
     # check if the database name is none
     tmp_file = get_tem_file(db_name=db_name)
+    print(tmp_file)
     if db_name is None:
         return "Database name cannot be empty"
     db_host = "--host=%s" % db_host
@@ -26,7 +28,9 @@ def backup_database_server(db_user='root', db_password=None, db_name=None, db_ho
 def get_tem_file(db_name=None):
     if not os.path.exists('/tmp'):
         os.mkdir("/tmp")
-    with tempfile.NamedTemporaryFile(suffix=".sql", prefix=db_name, delete=False) as tp:
+    current_timestamp = "%s-%s-%s" % (now().year, now().month, now().day)
+    tmp_filename = db_name + "_db_" + current_timestamp
+    with tempfile.NamedTemporaryFile(suffix=".sql", prefix=tmp_filename, delete=False) as tp:
         tmp_file_location = tp.name
     return tmp_file_location
 
@@ -44,11 +48,10 @@ def prepare_zip_file(sql_file=''):
     if not os.path.exists(sql_file):
         return HttpResponseBadRequest()
     zip_io = io.BytesIO()
+    filepath, filename = os.path.split(sql_file)
     with zipfile.ZipFile(zip_io, mode='w', compression=zipfile.ZIP_DEFLATED) as backup_zip:
         backup_zip.write(sql_file)
-
     # do a clean up of the file
-    filepath, filename = os.path.split(sql_file)
     try:
         os.remove(sql_file)
     except FileNotFoundError:
