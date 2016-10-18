@@ -11,7 +11,7 @@ FROM ubuntu:14.04
 MAINTAINER Edache Peter
 
 ENV DOCKYARD_HOME=/src
-ENV DOCKYARD_SRC=/src/webapp/flexisaf
+ENV DOCKYARD_SRC=/src/webapp/shinkafa
 ENV DOCKYARD_VIRT=/src/webapp/virt
 ENV DOCKYARD_VIRT_ACTIVATE=/src/webapp/virt/bin/activate
 ENV NGINX_SITE=/etc/nginx/sites-enabled

@@ -10,12 +10,12 @@ export DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
 export ENV="prod"
 django-admin migrate                  # Apply database migrations
 
-touch /src/webapp/flexisaf/logs/gunicorn.log
-touch /src/webapp/flexisaf/logs/access.log
-touch /src/webapp/flexisaf/logs/nginx-access.log;
-touch /src/webapp/flexisaf/logs/nginx-error.log;
+touch /src/webapp/shinkafa/logs/gunicorn.log
+touch /src/webapp/shinkafa/logs/access.log
+touch /src/webapp/shinkafa/logs/nginx-access.log;
+touch /src/webapp/shinkafa/logs/nginx-error.log;
 
-tail -n 0 -f /src/webapp/flexisaf/logs/*.log &
+tail -n 0 -f /src/webapp/shinkafa/logs/*.log &
 
 # Restart nginx
 echo Restarting Nginx
@@ -28,8 +28,8 @@ exec gunicorn shinkafa.wsgi:application \
      --bind=127.0.0.1:8000
      --workers 3 \
      --log-level=debug \
-     --log-file=/src/webapp/flexisaf/logs/gunicorn.log \
-     --access-logfile=/src/webapp/flexisaf/logs/access.log \
+     --log-file=/src/webapp/shinkafa/logs/gunicorn.log \
+     --access-logfile=/src/webapp/shinkafa/logs/access.log \
      "$@"
 
 
