@@ -160,17 +160,17 @@ def start_docker_process(docker_host="staging"):
 
 @task()
 def stop_container():
-    run("docker stop shinkafa")
+    local("docker stop shinkafa")
 
 
 @task()
 def start_container():
-    run("docker start shinkafa")
+    local("docker start shinkafa")
 
 
 @task()
 def restart_container():
-    run("docker restart shinkafa")
+    local("docker restart shinkafa")
 
 
 
