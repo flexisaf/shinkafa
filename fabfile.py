@@ -25,7 +25,7 @@ except KeyError:
 env.roledefs = {
     "ci": ["jenkins"],
     "dev": ["localhost"],
-    "flexisaf": ["ec2-user@54.213.134.173"]
+    "flexisaf": ["ubuntu@ci.flexisaf.com"]
 }
 
 env.key_filename = SSH_PEM_FILE
@@ -59,9 +59,7 @@ def remove_old_build():
         local("rm -r build")
         local("rm -r dist")
         local("rm *.deb")
-        local("rm -r SAFTIMS_HR.egg-info")
-
-
+        local("rm -r SHINKAFA.egg-info")
 
 
 

@@ -2,9 +2,8 @@
 
 PROJECT_SRC=SAFTIMS-HR-0.0.1
 ACTIVATE_PATH=/src/webapp/virt/bin/activate
-SOCKFILE=/src/webapp/flexisaf/run/gunicorn.sock  # we will communicte using this unix socket
-DJANGO_WSGI_MODULE=flexisaf.wsgi
-DJANGO_SETTINGS_MODULE=flexisaf.settings.production
+DJANGO_WSGI_MODULE=shinkafa.wsgi
+DJANGO_SETTINGS_MODULE=shinkafa.settings
 
 
 
@@ -39,7 +38,7 @@ service nginx restart
 # # Start Gunicorn processes
 echo Starting Gunicorn
 exec gunicorn shinkafa.wsgi:application \
-     --name flexisaf \
+     --name shinkafa \
      --bind=127.0.0.1:8000
      --workers 3 \
      --log-level=debug \

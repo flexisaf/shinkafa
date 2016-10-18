@@ -25,7 +25,7 @@ RUN apt-get install python-setuptools --force-yes -y 	## for python2.7 or above
 RUN apt-get install build-essential --force-yes -y 		##
 RUN apt-get install python-virtualenv --force-yes -y 	## virtual env
 RUN apt-get install python-dev --force-yes -y 		## because ubuntu 14.04 does not have dev version of python 2
-RUN apt-get install mysql-server --force -y
+RUN apt-get install mysql-client-core-5.6 --force -y
 RUN apt-get install  build-essential \
                          libmysqlclient-dev \
                          libpq-dev \
@@ -55,7 +55,7 @@ VOLUME ["$DOCKYARD_SRC/media/", "$DOCKYARD_SRC/logs/"]
 
 RUN pip install  $DOCKYARD_SRC/SHINKAFA-0.0.1.tar.gz
 
-EXPOSE 443
+EXPOSE 80
 
 WORKDIR $DOCKYARD_SRC
 COPY ./entry-point.sh /

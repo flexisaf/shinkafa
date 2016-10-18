@@ -2,6 +2,5 @@ include manage.py
 include requirements.txt
 
 recursive-include shinkafa/assets *
-recursive-include scripts *
 recursive-include mia/templates *
 
