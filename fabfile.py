@@ -148,7 +148,7 @@ def start_docker_process(docker_host="staging"):
     host_machine_pwd = local('echo $HOME')
     host_log_directory = os.path.join(host_machine_pwd, 'webapp/log/shinkafa')
     # check if there is a log directory on the host machine
-    if not exists(host_log_directory):
+    if not os.path.exists(host_log_directory):
         # then create the log directory
         local("mkdir -p %s" % host_log_directory)
     docker_tag = "flexisaf/shinkafa:latest"
@@ -197,7 +197,7 @@ def ship_docker():
         # check if this is the first time we are loading this docker on the machine
         docker_restart = local("docker restart shinkafa")
     if docker_restart.failed:
-        print(red("Docker process restarted, Starting a new process"))
+        print(red("Docker process restarted, failed Starting a new process"))
         # only start a new docker process if there is no current process running
         start_docker_process(docker_host="shinkafa")  # start a new docker process
 
