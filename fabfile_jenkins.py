@@ -93,7 +93,7 @@ def start_docker_process(docker_host="staging"):
     host_log_directory = '/home/ubuntu/webapp/log/shinkafa'
     # host_log_directory = os.path.join(host_machine_pwd, 'webapp/log/shinkafa')
     # check if there is a log directory on the host machine
-    if not exists(host_log_directory):
+    if not os.path.exists(host_log_directory):
         # then create the log directory
         local("mkdir -p %s" % host_log_directory)
     docker_tag = "flexisaf/shinkafa:latest"
