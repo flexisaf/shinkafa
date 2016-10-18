@@ -175,7 +175,6 @@ def restart_container():
 
 
 
-
 @task()
 def start_build_pipeline():
     remove_old_build()
@@ -200,7 +199,7 @@ def ship_docker():
     if docker_restart.failed:
         print(red("Docker process restarted, Starting a new process"))
         # only start a new docker process if there is no current process running
-        start_docker_process(docker_host=get_client_name_from_host("shinkafa"))  # start a new docker process
+        start_docker_process(docker_host="shinkafa")  # start a new docker process
 
 
 
