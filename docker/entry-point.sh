@@ -6,26 +6,16 @@ DJANGO_WSGI_MODULE=shinkafa.wsgi
 DJANGO_SETTINGS_MODULE=shinkafa.settings
 
 
-
-
-
-# Create the run directory if it doesn't exist
-RUNDIR=$(dirname $SOCKFILE)
-mkdir -p ${RUNDIR}
-
 export DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
 export ENV="prod"
 django-admin migrate                  # Apply database migrations
 
-
- # Prepare log files and start outputting logs to stdout
 touch /src/webapp/flexisaf/logs/gunicorn.log
 touch /src/webapp/flexisaf/logs/access.log
 touch /src/webapp/flexisaf/logs/nginx-access.log;
 touch /src/webapp/flexisaf/logs/nginx-error.log;
 
 tail -n 0 -f /src/webapp/flexisaf/logs/*.log &
-
 
 # Restart nginx
 echo Restarting Nginx
