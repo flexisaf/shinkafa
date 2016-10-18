@@ -146,7 +146,7 @@ def start_docker_process(docker_host="staging"):
         any reason the process inside crashes
     """
     host_machine_pwd = local('echo $HOME')
-    host_log_directory = os.path.join(host_machine_pwd, 'webapp/log/shinkafa')
+    host_log_directory = '/home/ubuntu/webapp/log/shinkafa'
     # check if there is a log directory on the host machine
     if not os.path.exists(host_log_directory):
         # then create the log directory
