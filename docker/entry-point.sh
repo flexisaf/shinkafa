@@ -15,11 +15,7 @@ mkdir -p ${RUNDIR}
 
 export DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
 export ENV="prod"
-
-
-
-
-#django-admin migrate                  # Apply database migrations
+django-admin migrate                  # Apply database migrations
 
 
  # Prepare log files and start outputting logs to stdout
