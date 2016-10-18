@@ -197,7 +197,6 @@ def send_compress_docker_to_remote():
 @task()
 def start_build_pipeline():
     remove_old_build()
-    run_create_js_dist()
     package_tar()
     copy_tar_to_docker_folder()
     build_docker_image()
